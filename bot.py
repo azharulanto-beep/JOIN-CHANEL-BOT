@@ -2,17 +2,17 @@ import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
 import json
+import random
+import string
 import time
 from datetime import datetime
 
 TOKEN = os.environ.get("BOT_TOKEN")
 ADMIN_ID = int(os.environ.get("ADMIN_ID", "0"))
 
-# ====================== YOUR CONFIGURATION ======================
-BOT_NAME = "🔥 ANTO X CHEATS 🔥"
-REQUIRED_CHANNEL_LINK = "https://t.me/+olOzQqzfF9A1MTVl"
-REQUIRED_CHANNEL_USERNAME = "@Udusus"
-AUDIO_FILE_LINK = "https://t.me/Kkkksksk/5"
+# ====================== YOUR CHANNEL ======================
+CHANNEL_LINK = "https://t.me/+olOzQqzfF9A1MTVl"
+CHANNEL_USERNAME = "@Udusus"
 APK_FILE_PATH = "app.apk"
 IMAGE_URL = "https://i.postimg.cc/qvt6CQjk/logo.jpg"
 
@@ -32,293 +32,118 @@ def save_db(f, d):
 
 users = load_db('users.json')
 
-# ====================== CHECK USER JOINED ======================
-def check_user_joined(user_id):
+# ====================== CHECK JOINED ======================
+def check_joined(user_id):
     try:
-        chat_member = bot.get_chat_member(REQUIRED_CHANNEL_USERNAME, user_id)
+        chat_member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
         return chat_member.status in ['member', 'administrator', 'creator']
     except:
         return False
 
-# ====================== HACKER STYLE MESSAGES ======================
+# ====================== GENERATE KEY ======================
+def gen_key():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+# ====================== START ======================
 @bot.message_handler(commands=['start'])
 def start(m):
     uid = str(m.chat.id)
     
-    if uid in users and users[uid].get("received", False):
-        bot.send_message(m.chat.id, "⚡ **ACCESS GRANTED!**\n\n🔄 Resending your APK...", parse_mode="Markdown")
-        send_apk_file(m)
+    if uid in users and users[uid].get("got_key", False):
+        bot.send_message(m.chat.id, f"🔑 YOUR KEY: `{users[uid]['key']}`", parse_mode="Markdown")
         return
     
-    # HACKER STYLE HEADER
-    header = """
-╔══════════════════════════════════════════════════════════╗
-║                                                          ║
-║     ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ ║
-║    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌║
-║    ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌║
-║    ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌║
-║    ▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌║
-║    ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌║
-║    ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌║
-║    ▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌║
-║    ▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌║
-║    ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌║
-║     ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀ ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-"""
+    # Small welcome like screenshot
+    bot.send_message(m.chat.id, "HELLO MODDER ANTO ❤️", parse_mode="Markdown")
+    time.sleep(0.5)
     
-    welcome = f"""{header}
+    bot.send_message(m.chat.id, "JOIN ALL CHANNELS FIRST AND TAKE YOUR PAID PANEL 1 DAY TRIAL KEY 🎁", parse_mode="Markdown")
+    time.sleep(0.5)
+    
+    bot.send_message(m.chat.id, "HOW TO GENERATE KEY 🔑\nCLICK HERE", parse_mode="Markdown")
+    time.sleep(0.5)
+    
+    bot.send_photo(m.chat.id, IMAGE_URL, caption="🖼️ PAID PANEL PREVIEW", parse_mode="Markdown")
+    time.sleep(0.5)
+    
+    # Show channel list
+    text = """- JOIN CHANNEL 1"""
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔗 JOIN CHANNEL", url=CHANNEL_LINK))
+    markup.add(InlineKeyboardButton("✅ VERIFY JOINED", callback_data="verify"))
+    
+    bot.send_message(m.chat.id, text, reply_markup=markup, parse_mode="Markdown")
 
-┌────────────────────────────────────────────────────────┐
-│                    🔐 ACCESS DENIED                     │
-│              YOU MUST COMPLETE VERIFICATION             │
-└────────────────────────────────────────────────────────┘
-
-╔══════════════════════════════════════════════════════════╗
-║  💀 **WELCOME TO THE UNDERGROUND** 💀                    ║
-║                                                          ║
-║  🎯 **TARGET:** ANTO X CHEATS APK                        ║
-║  🔒 **SECURITY LEVEL:** MAXIMUM                         ║
-║  👤 **OPERATOR:** {m.from_user.first_name}               ║
-║                                                          ║
-║  ⚠️ **UNAUTHORIZED ACCESS IS IMPOSSIBLE**               ║
-║  ✅ **COMPLETE THE TASK TO GET YOUR WEAPON**             ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-"""
-    
-    bot.send_message(m.chat.id, welcome, parse_mode="Markdown")
-    
-    time.sleep(1)
-    
-    # SEND AUDIO
-    try:
-        bot.send_audio(m.chat.id, AUDIO_FILE_LINK, caption="🎵 **INCOMING TRANSMISSION** 🎵\n\nListen carefully...", parse_mode="Markdown")
-    except:
-        bot.send_message(m.chat.id, "🎵 [CLASSIFIED AUDIO TRANSMISSION]", parse_mode="Markdown")
-    
-    time.sleep(1)
-    
-    # SEND IMAGE
-    bot.send_photo(m.chat.id, IMAGE_URL, caption="🖼️ **ENCRYPTED IMAGE RECEIVED**", parse_mode="Markdown")
-    
-    time.sleep(1)
-    
-    show_task(m)
-
-def show_task(m):
-    if check_user_joined(m.chat.id):
-        deliver_apk(m)
-        return
-    
-    task_text = """
-╔══════════════════════════════════════════════════════════╗
-║                    📡 MISSION ACTIVATED                  ║
-╚══════════════════════════════════════════════════════════╝
-
-┌────────────────────────────────────────────────────────┐
-│  🔴 **TASK:** JOIN OUR SECURE CHANNEL                   │
-│  🎯 **REWARD:** ANTO X CHEATS APK + ACCESS KEY         │
-│  ⏱️ **TIME LIMIT:** UNLIMITED                           │
-│  💀 **FAILURE:** ACCESS PERMANENTLY BLOCKED             │
-└────────────────────────────────────────────────────────┘
-
-╔══════════════════════════════════════════════════════════╗
-║                                                          ║
-║     ░██████╗██╗░░██╗░█████╗░███╗░░██╗███╗░░██╗███████╗██╗░░░░░ ║
-║     ██╔════╝██║░░██║██╔══██╗████╗░██║████╗░██║██╔════╝██║░░░░░ ║
-║     ╚█████╗░███████║███████║██╔██╗██║██╔██╗██║█████╗░░██║░░░░░ ║
-║     ░╚═══██╗██╔══██║██╔══██║██║╚████║██║╚████║██╔══╝░░██║░░░░░ ║
-║     ██████╔╝██║░░██║██║░░██║██║░╚███║██║░╚███║███████╗███████╗ ║
-║     ╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚══╝╚══════╝╚══════╝ ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-
-┌────────────────────────────────────────────────────────┐
-│  📢 **CLICK THE BUTTON BELOW TO JOIN THE CHANNEL**      │
-│                                                         │
-│  🔗 **CHANNEL LINK:** [CLASSIFIED]                      │
-│                                                         │
-│  ✅ **AFTER JOINING, CLICK VERIFY**                     │
-└────────────────────────────────────────────────────────┘
-"""
-    
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(
-        InlineKeyboardButton("🔗 ACCESS CHANNEL 🔗", url=REQUIRED_CHANNEL_LINK),
-        InlineKeyboardButton("✅ VERIFY & UNLOCK APK ✅", callback_data="check_task")
-    )
-    
-    bot.send_message(m.chat.id, task_text, reply_markup=markup, parse_mode="Markdown")
-
-@bot.callback_query_handler(func=lambda c: c.data == "check_task")
-def check_task(c):
-    if check_user_joined(c.message.chat.id):
-        deliver_apk(c.message)
-    else:
-        fail_text = """
-╔══════════════════════════════════════════════════════════╗
-║                  ❌ VERIFICATION FAILED ❌                ║
-╚══════════════════════════════════════════════════════════╝
-
-┌────────────────────────────────────────────────────────┐
-│  ⚠️ **YOU HAVE NOT JOINED THE CHANNEL YET!**            │
-│                                                         │
-│  🔴 **STATUS:** UNAUTHORIZED                            │
-│  💀 **ACTION REQUIRED:** JOIN THE CHANNEL FIRST         │
-│                                                         │
-│  🔗 CLICK THE BUTTON BELOW TO JOIN                      │
-└────────────────────────────────────────────────────────┘
-"""
-        markup = InlineKeyboardMarkup()
-        markup.add(
-            InlineKeyboardButton("🔗 JOIN CHANNEL NOW 🔗", url=REQUIRED_CHANNEL_LINK),
-            InlineKeyboardButton("✅ VERIFY AGAIN ✅", callback_data="check_task")
-        )
+@bot.callback_query_handler(func=lambda c: c.data == "verify")
+def verify(c):
+    if check_joined(c.message.chat.id):
+        uid = str(c.message.chat.id)
+        key = gen_key()
         
-        bot.edit_message_text(fail_text, c.message.chat.id, c.message.message_id, reply_markup=markup, parse_mode="Markdown")
+        users[uid] = {
+            "name": c.message.from_user.first_name,
+            "key": key,
+            "got_key": True,
+            "date": str(datetime.now())
+        }
+        save_db('users.json', users)
+        
+        bot.send_message(c.message.chat.id, f"✅ VERIFIED!\n\n🔑 YOUR KEY: `{key}`", parse_mode="Markdown")
+        
+        # Send APK
+        try:
+            with open(APK_FILE_PATH, 'rb') as f:
+                bot.send_document(c.message.chat.id, f, caption="📱 YOUR APK FILE", parse_mode="Markdown")
+        except:
+            pass
+    else:
+        text = """❌ NOT JOINED YET!
 
-def deliver_apk(m):
-    uid = str(m.chat.id)
-    
-    success_text = """
-╔══════════════════════════════════════════════════════════╗
-║              🎉 ACCESS GRANTED! 🎉                       ║
-╚══════════════════════════════════════════════════════════╝
+- JOIN CHANNEL FIRST
+- THEN CLICK VERIFY"""
+        
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔗 JOIN CHANNEL", url=CHANNEL_LINK))
+        markup.add(InlineKeyboardButton("✅ VERIFY AGAIN", callback_data="verify"))
+        
+        bot.edit_message_text(text, c.message.chat.id, c.message.message_id, reply_markup=markup, parse_mode="Markdown")
 
-┌────────────────────────────────────────────────────────┐
-│  ✅ **VERIFICATION COMPLETE!**                          │
-│                                                         │
-│  🎯 **YOU HAVE BEEN AUTHORIZED**                        │
-│  💀 **YOUR WEAPON IS READY FOR DOWNLOAD**               │
-│                                                         │
-│  📱 **FILE:** ANTO X CHEATS APK                         │
-│  🔒 **ENCRYPTION:** NONE (READY TO USE)                 │
-│  ⚡ **STATUS:** UNLOCKED                                │
-└────────────────────────────────────────────────────────┘
-
-╔══════════════════════════════════════════════════════════╗
-║     ░█████╗░███╗░░██╗████████╗░█████╗░                 ║
-║     ██╔══██╗████╗░██║╚══██╔══╝██╔══██╗                 ║
-║     ██║░░██║██╔██╗██║░░░██║░░░██║░░██║                 ║
-║     ██║░░██║██║╚████║░░░██║░░░██║░░██║                 ║
-║     ╚█████╔╝██║░╚███║░░░██║░░░╚█████╔╝                 ║
-║     ░╚════╝░╚═╝░░╚══╝░░░╚═╝░░░░╚════╝░                 ║
-╚══════════════════════════════════════════════════════════╝
-
-⬇️ **YOUR APK IS READY BELOW** ⬇️
-"""
-    
-    bot.send_message(m.chat.id, success_text, parse_mode="Markdown")
-    
-    # SAVE USER
-    if uid not in users:
-        users[uid] = {}
-    users[uid]["received"] = True
-    users[uid]["name"] = m.from_user.first_name
-    users[uid]["received_at"] = str(datetime.now())
-    save_db('users.json', users)
-    
-    send_apk_file(m)
-
-def send_apk_file(m):
-    try:
-        with open(APK_FILE_PATH, 'rb') as f:
-            bot.send_document(m.chat.id, f, caption="📱 **ANTO X CHEATS APK**\n\n🔓 DOWNLOAD AND INSTALL\n\n💀 USE WISELY", parse_mode="Markdown")
-    except:
-        bot.send_message(m.chat.id, "❌ **ERROR: APK FILE NOT FOUND**\n\nContact administrator: @PAPAJI_ANTO", parse_mode="Markdown")
-
-# ====================== ADMIN PANEL ======================
+# ====================== ADMIN ======================
 @bot.message_handler(commands=['admin'])
-def admin_panel(m):
+def admin(m):
     if m.chat.id != ADMIN_ID:
         return
-    
     total = len(users)
-    received = sum(1 for u in users.values() if u.get("received", False))
-    
-    text = f"""
-╔══════════════════════════════════════╗
-║         👑 ADMIN PANEL 👑            ║
-╚══════════════════════════════════════╝
-
-┌──────────────────────────────────────┐
-│ 📊 **STATISTICS**                     │
-│                                      │
-│ 👥 TOTAL USERS: {total}               │
-│ 📱 APK RECEIVED: {received}           │
-│ ⏳ PENDING: {total - received}        │
-└──────────────────────────────────────┘
-
-┌──────────────────────────────────────┐
-│ 📢 **COMMANDS**                       │
-│                                      │
-│ `/users` - List all users            │
-│ `/stats` - Show statistics           │
-│ `/broadcast MSG` - Send to all       │
-└──────────────────────────────────────┘
-"""
-    
-    bot.send_message(m.chat.id, text, parse_mode="Markdown")
+    got = sum(1 for u in users.values() if u.get("got_key", False))
+    bot.send_message(m.chat.id, f"👑 ADMIN PANEL\n\nUSERS: {total}\nGOT KEY: {got}\nPENDING: {total - got}")
 
 @bot.message_handler(commands=['users'])
-def list_users(m):
+def users_list(m):
     if m.chat.id != ADMIN_ID:
         return
-    
     if not users:
-        bot.reply_to(m, "❌ NO USERS FOUND")
+        bot.reply_to(m, "NO USERS")
         return
-    
-    text = "👥 **USER LIST**\n━━━━━━━━━━━━━━━━━━━━\n\n"
+    text = "👥 USERS:\n\n"
     for uid, u in users.items():
-        status = "✅ RECEIVED" if u.get("received") else "⏳ PENDING"
-        text += f"🆔 `{uid}` | {u.get('name', 'Unknown')}\n   📅 {u.get('received_at', 'Not yet')[:16]}\n   {status}\n━━━━━━━━━━━━━━━━━━━━\n"
-    
-    bot.send_message(m.chat.id, text, parse_mode="Markdown")
-
-@bot.message_handler(commands=['stats'])
-def stats(m):
-    if m.chat.id != ADMIN_ID:
-        return
-    
-    total = len(users)
-    received = sum(1 for u in users.values() if u.get("received", False))
-    
-    text = f"📊 **STATISTICS**\n━━━━━━━━━━━━━━━━━━━━\n\n👥 Total Users: {total}\n📱 APK Received: {received}\n⏳ Pending: {total - received}"
-    bot.send_message(m.chat.id, text, parse_mode="Markdown")
+        text += f"{uid} | {u.get('name')} | {u.get('key')}\n"
+    bot.send_message(m.chat.id, text)
 
 @bot.message_handler(commands=['broadcast'])
 def broadcast(m):
     if m.chat.id != ADMIN_ID:
         return
-    
     msg = m.text.replace("/broadcast ", "")
-    count = 0
-    
-    for uid in users.keys():
+    c = 0
+    for uid in users:
         try:
-            bot.send_message(int(uid), f"📢 **ANNOUNCEMENT**\n\n{msg}", parse_mode="Markdown")
-            count += 1
-            time.sleep(0.05)
+            bot.send_message(int(uid), f"📢 {msg}")
+            c += 1
         except:
             pass
-    
-    bot.reply_to(m, f"✅ Sent to {count} users")
+    bot.reply_to(m, f"SENT TO {c} USERS")
 
 # ====================== RUN ======================
-if __name__ == "__main__":
-    print("=" * 60)
-    print("🔥 ANTO X CHEATS ULTIMATE BOT STARTED!")
-    print(f"🤖 Bot: @{bot.get_me().username}")
-    print(f"👑 Admin ID: {ADMIN_ID}")
-    print("=" * 60)
-    
-    while True:
-        try:
-            bot.infinity_polling(timeout=60)
-        except Exception as e:
-            print(f"Error: {e}")
-            time.sleep(5)
+print("🔥 BOT STARTED!")
+bot.infinity_polling()
